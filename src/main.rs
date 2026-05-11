@@ -21,7 +21,7 @@ impl MessageHandler<UserCreatedEventMessage> for UserCreatedHandler {
         // thread::sleep(ten_millis);
         
         println!(
-            "In Tsaniya Fini Ardiyanti's Computer [129500004y]. Message received: {:?}",
+            "In Tsaniya Fini Ardiyanti's Computer [2406437893]. Message received: {:?}",
             message
         );
         
@@ -31,7 +31,7 @@ impl MessageHandler<UserCreatedEventMessage> for UserCreatedHandler {
 
 fn main() {
     let listener = CrosstownBus::new_queue_listener(
-        "amqp://guest:guest@localhost:5672".to_owned(),
+        "amqp://guest:guest@127.0.0.1:5672".to_owned(),
     )
     .unwrap();
 
