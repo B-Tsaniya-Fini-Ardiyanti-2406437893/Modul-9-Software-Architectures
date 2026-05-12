@@ -32,3 +32,12 @@ amqp://guest:guest@localhost:5672
 > **Catatan:** `guest:guest` adalah **default credential** di RabbitMQ. Hanya bekerja pada `localhost` secara default karena alasan keamanan. Di lingkungan *production*, harus mengganti kredensial ini.
 
 ---
+
+## Reflection and Running at least three subscribers
+
+![Three Subscribers Console](assets/three-subscribers.png)
+![RabbitMQ Three Consumers](assets/rabbitmq-three-consumers.png)
+
+Grafik antrean turun jauh lebih cepat dengan puncak yang lebih rendah karena diterapkannya konsep Competing Consumers dengan menjalankan tiga subscriber secara bersamaan. Pada simulasi sebelumnya dengan hanya satu subscriber, pesan menumpuk karena hanya satu pesan yang bisa diproses per detik. Dengan adanya tiga subscriber yang mendengarkan antrean yang sama, beban kerja terbagi secara paralel sehingga pesan yang masuk langsung diproses bersama-sama dan antrean kembali ke angka 0 jauh lebih cepat.
+
+Ada beberapa hal yang dapat diperbaiki. Pertama, URL koneksi RabbitMQ masih ditulis secara hardcode di dalam main.rs, sebaiknya dipindahkan ke file konfigurasi atau environment variables agar lebih aman dan mudah diubah tanpa menyentuh source code. Kedua, penggunaan thread::sleep di subscriber memblokir thread utama secara penuh karena arsitektur ini sudah berbasis asinkronus dengan tokio, akan lebih efisien menggantinya dengan tokio::time::sleep. Ketiga, pemanggilan publish_event di publisher masih dilakukan satu per satu secara manual, akan lebih bersih jika menggunakan perulangan untuk mengiterasi data yang ingin dikirim.
